@@ -102,6 +102,7 @@ def tobs():
 def start_param(start):
     # Create our session (link) from Python to the DB
     session = Session(engine)
+    dt_start = dt.datetime.strptime(start, '%Y-%m-%d')
   """calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date"""  
   # Query 
     prcp = session.query(quant.date,func.min(quant.tobs),func.avg(quant.tobs), func.max(quant.tobs)).\
@@ -123,13 +124,16 @@ def start_param(start):
 def duration_param(start,end):
     # Create our session (link) from Python to the DB
     session = Session(engine)
+    
 
     """Return a list of all passenger names"""
     # Query all passengers
     results = session.query(quant.date, quant.prcp).all()
+    dt_start = dt.datetime.strptime(start, '%Y-%m-%d')
+    dt_end = dt.datetime.strptime(end, '%Y-%m-%d')
 
     prcp = session.query(quant.date,func.min(quant.tobs),func.avg(quant.tobs), func.max(quant.tobs)).\
-                    filter(quant.date >= start & quant.date <= end).\
+                    filter(quant.date >= dt_start & quant.date <= dt_end).\
                     group_by(quant.date).all()
 
     session.close()
